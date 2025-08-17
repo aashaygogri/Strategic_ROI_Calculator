@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart ROI Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .help-content { display: none; }
+        .help-content.show { display: block; }
+        .scenario-fields { display: none; }
+        .scenario-fields.show { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-6xl mx-auto p-6 bg-white min-h-screen">
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white mr-3">💰</div>
+                <h1 class="text-3xl font-bold text-gray-900">Smart ROI Calculator</h1>
+            </div>
+            <p class="text-lg text-gray-600">"Your compass for an Informed Investment"</p>
+            <p class="text-sm text-gray-500 mt-2">Capital Catalysts Team</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Input Section -->
+            <div class="space-y-6">
+                <!-- INVESTMENT DETAILS SECTION -->
+                <div class="bg-blue-50 p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-4">💵 Investment Details</h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Currency and Timeframe -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                                <select id="currency" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="CAD">CAD</option>
+                                    <option value="AUD">AUD</option>
+                                    <option value="JPY">JPY</option>
+                                    <option value="CNY">CNY</option>
+                                    <option value="INR">INR</option>
+                                    <option value="BRL">BRL</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Timeframe</label>
+                                <select id="timeframe" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                    <option value="3">3 months</option>
+                                    <option value="6">6 months</option>
+                                    <option value="12" selected>12 months</option>
+                                    <option value="18">18 months</option>
+                                    <option value="24">24 months</option>
+                                    <option value="36">36 months</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Investment Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Investment Category</label>
+                            <select id="category" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                <option value="customer-acquisition">Customer Acquisition</option>
+                                <option value="customer-retention">Customer Retention & Growth</option>
+                                <option value="product-development">Product/Service Development</option>
+                                <option value="operational-efficiency">Operational Efficiency</option>
+                                <option value="team-capability">Team & Capability Building</option>
+                                <option value="risk-mitigation">Risk Management & Compliance</option>
+                            </select>
+                            <p id="category-description" class="text-sm text-gray-600 mt-1">Investments to attract new customers</p>
+                        </div>
+
+                        <!-- Specific Investment Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Specific Investment Type</label>
+                            <select id="investmentType" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select specific type...</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Options update based on category selection above</p>
+                        </div>
+
+                        <!-- Investment Amount with Hidden Costs Checker -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Investment Amount
+                                <button onclick="showHiddenCosts()" class="ml-2 text-blue-600 hover:text-blue-800 text-sm">
+                                    📋 Check hidden costs
+                                </button>
+                            </label>
+                            <input type="number" id="investment" placeholder="10000" 
+                                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <!-- Hidden Costs Checklist (initially hidden) -->
+                        <div id="hidden-costs-modal" class="hidden bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                            <h4 class="font-medium text-yellow-800 mb-2">💡 Have you included these costs?</h4>
+                            <div class="space-y-2 text-sm">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" id="cost-training">
+                                    <span>Training/onboarding time costs</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" id="cost-integration">
+                                    <span>Integration/setup costs</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" id="cost-maintenance">
+                                    <span>Ongoing maintenance (first year)</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" id="cost-productivity">
+                                    <span>Lost productivity during transition</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" id="cost-external">
+                                    <span>External consultant/vendor fees</span>
+                                </label>
+                            </div>
+                            <div class="mt-3 flex gap-2">
+                                <button onclick="adjustForHiddenCosts()" class="bg-yellow-600 text-white px-4 py-2 rounded text-sm hover:bg-yellow-700">
+                                    Add 20% for unchecked items
+                                </button>
+                                <button onclick="closeHiddenCosts()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-400">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Expected Return with Scenarios -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Do you know the expected return?</label>
+                            <div class="flex gap-4 mb-3">
+                                <label class="flex items-center">
+                                    <input type="radio" name="hasReturn" value="yes" checked class="mr-2">
+                                    Yes, I have an estimate
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="hasReturn" value="no" class="mr-2">
+                                    No, help me estimate
+                                </label>
+                            </div>
+
+                            <div id="return-input">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Expected Return (Most Likely)</label>
+                                <input type="number" id="expectedReturn" placeholder="15000" 
+                                    class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                <p class="text-sm text-gray-600 mt-1">Industry typical: 150-300% over 6-12 months</p>
+                                
+                                <!-- Scenario Planning Toggle -->
+                                <button onclick="toggleScenarios()" class="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    + Add best/worst case scenarios (optional)
+                                </button>
+                                
+                                <!-- Scenario Fields -->
+                                <div id="scenario-fields" class="scenario-fields mt-3 space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">😟 Worst Case (if things go poorly)</label>
+                                        <input type="number" id="worstCase" placeholder="8000" 
+                                            class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                        <p class="text-xs text-gray-500 mt-1">What's the minimum return you might see?</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">🎯 Best Case (if everything goes perfectly)</label>
+                                        <input type="number" id="bestCase" placeholder="25000" 
+                                            class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                        <p class="text-xs text-gray-500 mt-1">What's the maximum return possible?</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="return-help" class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg" style="display: none;">
+                                <h4 class="font-medium text-yellow-800 mb-2">💡 Help Estimating Return</h4>
+                                <p class="text-sm text-yellow-700 mb-2">
+                                    <strong id="help-question">How many new customers do you expect to gain?</strong>
+                                </p>
+                                <p class="text-sm text-yellow-700 mb-2" id="help-guide">
+                                    Estimate: (New customers × Average order value × Repeat purchase rate) - Investment cost
+                                </p>
+                                <p class="text-xs text-yellow-600 italic" id="help-example">
+                                    Example: If you expect 50 new customers, each spending $200, with 30% buying again: (50 × $200 × 1.3) = $13,000 return on $5,000 investment
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STRATEGIC ASSESSMENT SECTION -->
+                <div class="bg-purple-50 p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-4">
+                        🧠 Strategic Assessment 
+                        <button onclick="toggleHelp('strategic')" class="ml-2 text-purple-600 hover:text-purple-800 text-sm">❓</button>
+                    </h2>
+
+                    <div id="strategic-help" class="help-content bg-purple-100 border border-purple-200 p-4 rounded-lg mb-4">
+                        <p class="text-sm text-purple-700">
+                            <strong>Don't worry if you're unsure!</strong> These questions help you think strategically about investments. 
+                            Choose the option that feels closest, even if you're not 100% certain.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Vision -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-sm font-medium text-gray-700">How critical is this to your business vision?</label>
+                                <button onclick="toggleHelp('vision')" class="text-purple-600 hover:text-purple-800">❓</button>
+                            </div>
+                            <div id="vision-help" class="help-content bg-white border border-purple-200 p-3 rounded-lg mb-2 text-sm">
+                                <div class="space-y-1 mb-2">
+                                    <div class="text-purple-700">• Essential = Without this, your business goals are at serious risk</div>
+                                    <div class="text-purple-700">• Important = This significantly accelerates your progress toward goals</div>
+                                    <div class="text-purple-700">• Beneficial = This makes things easier but isn't crucial</div>
+                                    <div class="text-purple-700">• Experimental = You're testing if this could become important</div>
+                                </div>
+                            </div>
+                            <select id="vision" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select... (or skip if unsure)</option>
+                                <option value="essential">Essential - core to business survival/growth</option>
+                                <option value="important">Important - significant impact on goals</option>
+                                <option value="beneficial">Beneficial - nice to have improvement</option>
+                                <option value="experimental">Experimental - testing new opportunities</option>
+                            </select>
+                        </div>
+
+                        <!-- Urgency -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-sm font-medium text-gray-700">How urgent is this decision?</label>
+                                <button onclick="toggleHelp('urgency')" class="text-purple-600 hover:text-purple-800">❓</button>
+                            </div>
+                            <div id="urgency-help" class="help-content bg-white border border-purple-200 p-3 rounded-lg mb-2 text-sm">
+                                <div class="space-y-1 mb-2">
+                                    <div class="text-purple-700">• Urgent = Opportunity disappears soon or problem gets worse daily</div>
+                                    <div class="text-purple-700">• Soon = You have weeks to decide before missing opportunity</div>
+                                    <div class="text-purple-700">• Planned = Part of your strategic plan, timeline is flexible</div>
+                                    <div class="text-purple-700">• Flexible = Nice to have improvement, no time pressure</div>
+                                </div>
+                            </div>
+                            <select id="urgency" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select... (or skip if unsure)</option>
+                                <option value="urgent">Urgent - need to decide within days</option>
+                                <option value="soon">Soon - need to decide within weeks</option>
+                                <option value="planned">Planned - can wait months if needed</option>
+                                <option value="flexible">Flexible - no specific timeline</option>
+                            </select>
+                        </div>
+
+                        <!-- Risk -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-sm font-medium text-gray-700">Your risk tolerance for this investment?</label>
+                                <button onclick="toggleHelp('risk')" class="text-purple-600 hover:text-purple-800">❓</button>
+                            </div>
+                            <div id="risk-help" class="help-content bg-white border border-purple-200 p-3 rounded-lg mb-2 text-sm">
+                                <div class="space-y-1 mb-2">
+                                    <div class="text-purple-700">• High = You can lose this money without serious business impact</div>
+                                    <div class="text-purple-700">• Moderate = You can handle the loss but it would hurt</div>
+                                    <div class="text-purple-700">• Low = You need to be confident this will work</div>
+                                    <div class="text-purple-700">• Minimal = You cannot afford to lose this money</div>
+                                </div>
+                            </div>
+                            <select id="risk" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select... (or skip if unsure)</option>
+                                <option value="high">High - can afford to lose this investment</option>
+                                <option value="moderate">Moderate - some risk acceptable</option>
+                                <option value="low">Low - need high certainty of returns</option>
+                                <option value="minimal">Minimal - cannot afford any losses</option>
+                            </select>
+                        </div>
+
+                        <!-- Scalability -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-sm font-medium text-gray-700">How scalable is this investment?</label>
+                                <button onclick="toggleHelp('scalability')" class="text-purple-600 hover:text-purple-800">❓</button>
+                            </div>
+                            <div id="scalability-help" class="help-content bg-white border border-purple-200 p-3 rounded-lg mb-2 text-sm">
+                                <div class="space-y-1 mb-2">
+                                    <div class="text-purple-700">• High = Once set up, you can multiply results with little extra cost</div>
+                                    <div class="text-purple-700">• Moderate = Some opportunity to scale but requires additional investment</div>
+                                    <div class="text-purple-700">• Low = Benefits are limited to current scope</div>
+                                    <div class="text-purple-700">• None = One-time benefit that can't be repeated</div>
+                                </div>
+                            </div>
+                            <select id="scalability" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select... (or skip if unsure)</option>
+                                <option value="high">High - can multiply results easily</option>
+                                <option value="moderate">Moderate - some scaling potential</option>
+                                <option value="low">Low - limited scaling opportunities</option>
+                                <option value="none">None - one-time benefit only</option>
+                            </select>
+                        </div>
+
+                        <!-- Sustainability -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-sm font-medium text-gray-700">How sustainable are the expected returns?</label>
+                                <button onclick="toggleHelp('sustainability')" class="text-purple-600 hover:text-purple-800">❓</button>
+                            </div>
+                            <div id="sustainability-help" class="help-content bg-white border border-purple-200 p-3 rounded-lg mb-2 text-sm">
+                                <div class="space-y-1 mb-2">
+                                    <div class="text-purple-700">• High = Benefits compound and grow stronger over time</div>
+                                    <div class="text-purple-700">• Moderate = Benefits maintain consistently for 1-2 years</div>
+                                    <div class="text-purple-700">• Low = Benefits decline as market/competition changes</div>
+                                    <div class="text-purple-700">• Uncertain = Depends on factors outside your control</div>
+                                </div>
+                            </div>
+                            <select id="sustainability" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select... (or skip if unsure)</option>
+                                <option value="high">High - benefits compound over years</option>
+                                <option value="moderate">Moderate - benefits last 1-2 years</option>
+                                <option value="low">Low - benefits fade within months</option>
+                                <option value="uncertain">Uncertain - depends on market conditions</option>
+                            </select>
+                        </div>
+
+                        <!-- Success Probability -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-sm font-medium text-gray-700">What's the probability of success?</label>
+                                <button onclick="toggleHelp('probability')" class="text-purple-600 hover:text-purple-800">❓</button>
+                            </div>
+                            <div id="probability-help" class="help-content bg-white border border-purple-200 p-3 rounded-lg mb-2 text-sm">
+                                <div class="space-y-1 mb-2">
+                                    <div class="text-purple-700">• Very Likely = You've done this before successfully or have strong evidence</div>
+                                    <div class="text-purple-700">• Likely = Good indicators and experience suggest success</div>
+                                    <div class="text-purple-700">• Moderate = Some unknowns but reasonable chance</div>
+                                    <div class="text-purple-700">• Uncertain = Many variables could affect outcome</div>
+                                </div>
+                                <p class="text-purple-600 italic text-xs">This helps calculate risk-adjusted returns - what you can realistically expect.</p>
+                            </div>
+                            <select id="probability" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select... (or skip if unsure)</option>
+                                <option value="0.8">Very Likely (80%+ chance)</option>
+                                <option value="0.65">Likely (60-80% chance)</option>
+                                <option value="0.5">Moderate (40-60% chance)</option>
+                                <option value="0.3">Uncertain (below 40% chance)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="calculate()" class="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 font-semibold text-lg">
+                    🎯 Get Smart Recommendation
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="space-y-6">
+                <div id="results" style="display: none;">
+                    <!-- Decision Readiness Score -->
+                    <div class="bg-indigo-50 p-6 rounded-lg">
+                        <h2 class="text-xl font-semibold mb-4">📊 Decision Readiness</h2>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div id="readiness-score" class="text-2xl font-bold text-indigo-600">High Confidence</div>
+                                <div id="readiness-details" class="text-sm text-gray-600 mt-1">5/5 strategic factors assessed</div>
+                            </div>
+                            <div id="readiness-icon" class="text-4xl">✅</div>
+                        </div>
+                        <p id="readiness-advice" class="text-sm text-indigo-700 mt-3">You have enough information to make a confident decision.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h2 class="text-xl font-semibold mb-4">📈 Financial Analysis</h2>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="bg-white p-4 rounded text-center">
+                                <div id="total-roi" class="text-2xl font-bold text-blue-600">0%</div>
+                                <div class="text-sm text-gray-600">Expected ROI</div>
+                                <div id="estimated-label" class="text-xs text-gray-500" style="display: none;">*Estimated</div>
+                            </div>
+                            <div class="bg-white p-4 rounded text-center">
+                                <div id="annual-roi" class="text-2xl font-bold text-green-600">0%</div>
+                                <div class="text-sm text-gray-600">Annualized ROI</div>
+                            </div>
+                        </div>
+
+                        <!-- Risk-Adjusted Returns -->
+                        <div id="risk-adjusted-section" class="bg-orange-50 border border-orange-200 p-4 rounded-lg mb-4" style="display: none;">
+                            <h3 class="font-semibold text-orange-800 mb-2">⚖️ Risk-Adjusted Returns</h3>
+                            <div class="space-y-1 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-orange-700">Success Probability:</span>
+                                    <span id="success-prob" class="font-medium">65%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-orange-700">Risk-Adjusted ROI:</span>
+                                    <span id="risk-adjusted-roi" class="font-bold text-orange-800">32.5%</span>
+                                </div>
+                                <div class="text-xs text-orange-600 mt-2">
+                                    <span id="risk-message">This accounts for the possibility that the investment might not succeed as planned.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenario Analysis Results -->
+                        <div id="scenario-results" class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4" style="display: none;">
+                            <h3 class="font-semibold text-blue-800 mb-2">📊 Scenario Analysis</h3>
+                            <div class="space-y-1 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-blue-700">Worst Case ROI:</span>
+                                    <span id="worst-roi" class="font-medium text-red-600">-20%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-blue-700">Expected ROI:</span>
+                                    <span id="expected-roi" class="font-medium text-blue-600">50%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-blue-700">Best Case ROI:</span>
+                                    <span id="best-roi" class="font-medium text-green-600">150%</span>
+                                </div>
+                                <div class="flex justify-between mt-2 pt-2 border-t border-blue-200">
+                                    <span class="text-blue-700 font-medium">Weighted Average:</span>
+                                    <span id="weighted-roi" class="font-bold text-blue-800">60%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Break-Even Analysis -->
+                        <div class="bg-green-50 border border-green-200 p-4 rounded-lg mb-4">
+                            <h3 class="font-semibold text-green-800 mb-2">⏱️ Break-Even Analysis</h3>
+                            <div class="space-y-1 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-green-700">Break-even point:</span>
+                                    <span id="breakeven-time" class="font-medium">6 months</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-green-700">Monthly return needed:</span>
+                                    <span id="monthly-return" class="font-medium">$1,667</span>
+                                </div>
+                                <div id="breakeven-metric" class="mt-2 text-green-600 text-xs italic">
+                                    For customer acquisition: Need ~17 customers/month at $100 average order
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Investment Category:</span>
+                                <span id="result-category" class="font-medium">Customer Acquisition</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Industry Benchmark:</span>
+                                <span id="benchmark" class="font-medium">150-300%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border-2 border-gray-200 p-6 rounded-lg">
+                        <h2 class="text-xl font-semibold mb-4">✅ Smart Recommendation</h2>
+                        
+                        <div id="recommendation-action" class="text-lg font-semibold mb-2 text-green-600">PROCEED</div>
+                        <p id="recommendation-reason" class="text-gray-700 mb-4">Good investment opportunity</p>
+
+                        <div id="estimation-note" class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4" style="display: none;">
+                            <h3 class="font-semibold text-blue-800 mb-2">Return Estimation Note:</h3>
+                            <p class="text-blue-700 text-sm" id="estimation-details">
+                                We estimated your return based on typical results for this category.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-green-800 mb-3">Next Steps:</h3>
+                        <ul class="text-green-700 space-y-1">
+                            <li>✔ Start small - test with 10-20% of the full investment first</li>
+                            <li>✔ Set one simple success metric you can track weekly</li>
+                            <li>✔ Ask one experienced business person for their opinion</li>
+                            <li>✔ Plan for it to take longer than you think</li>
+                            <li>✔ Document what you learn for next time</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-lg text-center">
+                        <p class="text-sm text-blue-700 mb-2">Want more personalized business guidance?</p>
+                        <p class="text-xs text-blue-600">Connect with the <strong>Capital Catalysts</strong> team at Business Mastery!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categoryData = {
+            'customer-acquisition': {
+                name: 'Customer Acquisition',
+                description: 'Investments to attract new customers',
+                multiplier: 2.0,
+                benchmark: '150-300%',
+                types: [
+                    'Digital marketing campaigns',
+                    'Traditional advertising',
+                    'Sales team expansion',
+                    'Lead generation systems',
+                    'Referral programs',
+                    'Trade shows/events',
+                    'Partnership development'
+                ],
+                helpQuestion: 'How many new customers do you expect to gain?',
+                helpGuide: 'Estimate: (New customers × Average order value × Repeat purchase rate) - Investment cost',
+                helpExample: 'If you expect 50 new customers, each spending $200, with 30% buying again: (50 × $200 × 1.3) = $13,000 return on $5,000 investment'
+            },
+            'customer-retention': {
+                name: 'Customer Retention & Growth',
+                description: 'Investments to keep and grow existing customers',
+                multiplier: 3.0,
+                benchmark: '200-500%',
+                types: [
+                    'Customer service improvements',
+                    'Loyalty programs',
+                    'Account management team',
+                    'Customer success initiatives',
+                    'Retention technology/CRM',
+                    'Customer experience upgrades',
+                    'Upselling/cross-selling systems'
+                ],
+                helpQuestion: 'How much additional revenue from existing customers?',
+                helpGuide: 'Estimate: (Reduced churn × Customer lifetime value) + (Increased purchases × Customers)',
+                helpExample: 'If you retain 20 more customers worth $1,000 each + 100 customers spend $50 more: (20 × $1,000) + (100 × $50) = $25,000'
+            },
+            'product-development': {
+                name: 'Product/Service Development',
+                description: 'Investments to improve or create offerings',
+                multiplier: 1.8,
+                benchmark: '100-400%',
+                types: [
+                    'Research & development',
+                    'Product feature enhancements',
+                    'New product/service creation',
+                    'Quality improvements',
+                    'Innovation initiatives',
+                    'Product testing/validation',
+                    'Intellectual property development'
+                ],
+                helpQuestion: "What's the revenue potential of the improved/new offering?",
+                helpGuide: 'Estimate: (Price increase × Existing customers) + (New market opportunity × Penetration rate)',
+                helpExample: 'If 500 customers pay $20 more + new market of 1,000 customers at 10% penetration × $100: (500 × $20) + (1,000 × 0.1 × $100) = $20,000'
+            },
+            'operational-efficiency': {
+                name: 'Operational Efficiency',
+                description: 'Investments to reduce costs or increase productivity',
+                multiplier: 2.5,
+                benchmark: '200-600%',
+                types: [
+                    'Process automation',
+                    'Technology systems/software',
+                    'Equipment upgrades',
+                    'Workflow optimization',
+                    'Quality control systems',
+                    'Supply chain improvements',
+                    'Facility improvements'
+                ],
+                helpQuestion: 'How much time/money will this save annually?',
+                helpGuide: 'Estimate: (Time saved per week × Hourly cost × 52 weeks) + (Direct cost savings × 12 months)',
+                helpExample: 'If saves 10 hours/week at $50/hour + $500/month in costs: (10 × $50 × 52) + ($500 × 12) = $32,000'
+            },
+            'team-capability': {
+                name: 'Team & Capability Building',
+                description: 'Investments in human capital and skills',
+                multiplier: 2.2,
+                benchmark: '150-400%',
+                types: [
+                    'Training & development',
+                    'New hire recruitment',
+                    'Leadership development',
+                    'Skills certification',
+                    'Team building initiatives',
+                    'Performance management systems',
+                    'Consultant/expert hiring'
+                ],
+                helpQuestion: 'What productivity/revenue increase do you expect?',
+                helpGuide: 'Estimate: (Team productivity increase % × Annual team output) + (Reduced turnover cost)',
+                helpExample: 'If team of 5 people earning $200k total becomes 20% more productive + saves $10k in turnover: ($200k × 0.20) + $10k = $50,000'
+            },
+            'risk-mitigation': {
+                name: 'Risk Management & Compliance',
+                description: 'Investments to protect and secure the business',
+                multiplier: 1.3,
+                benchmark: '50-150%',
+                types: [
+                    'Insurance coverage',
+                    'Security systems/cybersecurity',
+                    'Legal compliance initiatives',
+                    'Disaster recovery systems',
+                    'Financial risk management',
+                    'Data backup/protection',
+                    'Regulatory compliance'
+                ],
+                helpQuestion: "What's the cost of the risk you're preventing?",
+                helpGuide: 'Estimate: (Probability of risk × Cost if it happens) + (Peace of mind value)',
+                helpExample: 'If 10% chance of $100k cyber attack + $20k value of not worrying: (0.1 × $100k) + $20k = $30,000'
+            }
+        };
+
+        function toggleHelp(id) {
+            const element = document.getElementById(id + '-help');
+            if (element.classList.contains('show')) {
+                element.classList.remove('show');
+            } else {
+                element.classList.add('show');
+            }
+        }
+
+        function toggleScenarios() {
+            const element = document.getElementById('scenario-fields');
+            if (element.classList.contains('show')) {
+                element.classList.remove('show');
+            } else {
+                element.classList.add('show');
+            }
+        }
+
+        function showHiddenCosts() {
+            document.getElementById('hidden-costs-modal').classList.remove('hidden');
+        }
+
+        function closeHiddenCosts() {
+            document.getElementById('hidden-costs-modal').classList.add('hidden');
+        }
+
+        function adjustForHiddenCosts() {
+            const checkboxes = document.querySelectorAll('#hidden-costs-modal input[type="checkbox"]');
+            let uncheckedCount = 0;
+            
+            checkboxes.forEach(checkbox => {
+                if (!checkbox.checked) {
+                    uncheckedCount++;
+                }
+            });
+            
+            if (uncheckedCount > 0) {
+                const currentInvestment = parseFloat(document.getElementById('investment').value) || 0;
+                const adjustment = currentInvestment * 0.20;
+                const newInvestment = currentInvestment + adjustment;
+                document.getElementById('investment').value = Math.round(newInvestment);
+                
+                alert(`Added ${Math.round(adjustment)} to account for ${uncheckedCount} potential hidden costs`);
+            }
+            
+            closeHiddenCosts();
+        }
+
+        function updateCategory() {
+            const category = document.getElementById('category').value;
+            const data = categoryData[category];
+            
+            document.getElementById('category-description').textContent = data.description;
+            
+            const investmentTypeSelect = document.getElementById('investmentType');
+            investmentTypeSelect.innerHTML = '';
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select specific type...';
+            investmentTypeSelect.appendChild(defaultOption);
+            
+            if (data.types) {
+                data.types.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type;
+                    investmentTypeSelect.appendChild(option);
+                });
+            }
+            
+            const returnInput = document.querySelector('input[name="hasReturn"]:checked');
+            if (returnInput && returnInput.value === 'no') {
+                updateReturnHelp();
+            }
+        }
+
+        function updateReturnMode() {
+            const hasReturn = document.querySelector('input[name="hasReturn"]:checked').value;
+            const returnInput = document.getElementById('return-input');
+            const returnHelp = document.getElementById('return-help');
+            
+            if (hasReturn === 'yes') {
+                returnInput.style.display = 'block';
+                returnHelp.style.display = 'none';
+            } else {
+                returnInput.style.display = 'none';
+                returnHelp.style.display = 'block';
+                updateReturnHelp();
+            }
+        }
+
+        function updateReturnHelp() {
+            const category = document.getElementById('category').value;
+            const data = categoryData[category];
+            document.getElementById('help-question').textContent = data.helpQuestion;
+            document.getElementById('help-guide').textContent = data.helpGuide;
+            document.getElementById('help-example').textContent = 'Example: ' + data.helpExample;
+        }
+
+        function calculateDecisionReadiness() {
+            const fields = ['vision', 'urgency', 'risk', 'scalability', 'sustainability', 'probability'];
+            let filledCount = 0;
+            
+            fields.forEach(field => {
+                if (document.getElementById(field).value) {
+                    filledCount++;
+                }
+            });
+            
+            let score, details, icon, advice;
+            
+            if (filledCount >= 5) {
+                score = 'High Confidence';
+                details = `${filledCount}/6 strategic factors assessed`;
+                icon = '✅';
+                advice = 'You have enough information to make a confident decision.';
+            } else if (filledCount >= 3) {
+                score = 'Moderate Confidence';
+                details = `${filledCount}/6 strategic factors assessed`;
+                icon = '⚠️';
+                advice = 'You have a good foundation. Consider filling in more strategic factors for higher confidence.';
+            } else {
+                score = 'Low Confidence';
+                details = `${filledCount}/6 strategic factors assessed`;
+                icon = '❌';
+                advice = 'Consider gathering more strategic information before making a final decision.';
+            }
+            
+            document.getElementById('readiness-score').textContent = score;
+            document.getElementById('readiness-details').textContent = details;
+            document.getElementById('readiness-icon').textContent = icon;
+            document.getElementById('readiness-advice').textContent = advice;
+            
+            return filledCount;
+        }
+
+        function calculateBreakEven(investment, expectedReturn, timeframe) {
+            const monthlyReturn = (expectedReturn - investment) / timeframe;
+            const breakevenMonths = investment / monthlyReturn;
+            
+            const category = document.getElementById('category').value;
+            const currency = document.getElementById('currency').value;
+            
+            let breakevenMetric = '';
+            
+            if (category === 'customer-acquisition') {
+                const customersNeeded = Math.ceil(investment / 100);
+                breakevenMetric = `For customer acquisition: Need ~${Math.ceil(customersNeeded/breakevenMonths)} customers/month at ${currency}100 average order`;
+            } else if (category === 'operational-efficiency') {
+                const monthlySavings = investment / breakevenMonths;
+                breakevenMetric = `For operational efficiency: Need ${currency}${Math.round(monthlySavings)} monthly savings`;
+            }
+            
+            return {
+                months: Math.ceil(breakevenMonths),
+                monthlyReturn: Math.round(monthlyReturn),
+                metric: breakevenMetric
+            };
+        }
+
+        function calculate() {
+            const investment = parseFloat(document.getElementById('investment').value);
+            const hasReturn = document.querySelector('input[name="hasReturn"]:checked').value;
+            const timeframe = parseInt(document.getElementById('timeframe').value);
+            const category = document.getElementById('category').value;
+            const currency = document.getElementById('currency').value;
+            
+            if (!investment) {
+                alert('Please enter an investment amount');
+                return;
+            }
+
+            const readinessScore = calculateDecisionReadiness();
+
+            let expectedReturn;
+            let isEstimated = false;
+            
+            if (hasReturn === 'yes') {
+                expectedReturn = parseFloat(document.getElementById('expectedReturn').value);
+                if (!expectedReturn) {
+                    alert('Please enter expected return or choose "help me estimate"');
+                    return;
+                }
+            } else {
+                expectedReturn = investment * categoryData[category].multiplier;
+                isEstimated = true;
+            }
+
+            const worstCase = parseFloat(document.getElementById('worstCase').value);
+            const bestCase = parseFloat(document.getElementById('bestCase').value);
+            const hasScenarios = (worstCase && bestCase) || worstCase || bestCase;
+
+            let totalROI = ((expectedReturn - investment) / investment) * 100;
+            const annualizedROI = totalROI * (12 / timeframe);
+
+            const probability = document.getElementById('probability').value;
+            let riskAdjustedROI = null;
+            if (probability) {
+                const probValue = parseFloat(probability);
+                riskAdjustedROI = totalROI * probValue;
+                
+                document.getElementById('risk-adjusted-section').style.display = 'block';
+                document.getElementById('success-prob').textContent = (probValue * 100).toFixed(0) + '%';
+                document.getElementById('risk-adjusted-roi').textContent = riskAdjustedROI.toFixed(1) + '%';
+                
+                let riskMessage = '';
+                if (probValue >= 0.8) {
+                    riskMessage = 'High confidence - minimal adjustment needed for risk.';
+                } else if (probValue >= 0.6) {
+                    riskMessage = 'Good confidence - moderate risk adjustment applied.';
+                } else if (probValue >= 0.4) {
+                    riskMessage = 'Moderate confidence - significant risk adjustment applied.';
+                } else {
+                    riskMessage = 'Low confidence - substantial risk adjustment applied. Consider risk mitigation strategies.';
+                }
+                document.getElementById('risk-message').textContent = riskMessage;
+            } else {
+                document.getElementById('risk-adjusted-section').style.display = 'none';
+            }
+
+            if (hasScenarios) {
+                const worstROI = worstCase ? ((worstCase - investment) / investment) * 100 : totalROI;
+                const bestROI = bestCase ? ((bestCase - investment) / investment) * 100 : totalROI;
+                
+                const weightedReturn = (worstCase || expectedReturn) * 0.2 + 
+                                       expectedReturn * 0.6 + 
+                                       (bestCase || expectedReturn) * 0.2;
+                const weightedROI = ((weightedReturn - investment) / investment) * 100;
+                
+                document.getElementById('scenario-results').style.display = 'block';
+                document.getElementById('worst-roi').textContent = worstROI.toFixed(1) + '%';
+                document.getElementById('expected-roi').textContent = totalROI.toFixed(1) + '%';
+                document.getElementById('best-roi').textContent = bestROI.toFixed(1) + '%';
+                document.getElementById('weighted-roi').textContent = weightedROI.toFixed(1) + '%';
+                
+                document.getElementById('total-roi').textContent = weightedROI.toFixed(1) + '%';
+            } else {
+                document.getElementById('scenario-results').style.display = 'none';
+                document.getElementById('total-roi').textContent = totalROI.toFixed(1) + '%';
+            }
+
+            const breakeven = calculateBreakEven(investment, expectedReturn, timeframe);
+            document.getElementById('breakeven-time').textContent = breakeven.months + ' months';
+            document.getElementById('monthly-return').textContent = currency + breakeven.monthlyReturn.toLocaleString();
+            document.getElementById('breakeven-metric').textContent = breakeven.metric;
+
+            document.getElementById('annual-roi').textContent = annualizedROI.toFixed(1) + '%';
+            document.getElementById('result-category').textContent = categoryData[category].name;
+            document.getElementById('benchmark').textContent = categoryData[category].benchmark;
+
+            if (isEstimated) {
+                document.getElementById('estimated-label').style.display = 'block';
+                document.getElementById('estimation-note').style.display = 'block';
+                document.getElementById('estimation-details').textContent = 
+                    `We estimated your return at ${currency} ${expectedReturn.toLocaleString()} based on typical results for ${categoryData[category].name.toLowerCase()} investments. This is conservative - your actual results may be higher or lower.`;
+            } else {
+                document.getElementById('estimated-label').style.display = 'none';
+                document.getElementById('estimation-note').style.display = 'none';
+            }
+
+            const urgency = document.getElementById('urgency').value;
+            const vision = document.getElementById('vision').value;
+            const risk = document.getElementById('risk').value;
+            const scalability = document.getElementById('scalability').value;
+            const sustainability = document.getElementById('sustainability').value;
+            const investmentType = document.getElementById('investmentType').value;
+            
+            let recommendation = getRecommendation(annualizedROI, urgency, vision, isEstimated, readinessScore, riskAdjustedROI);
+            document.getElementById('recommendation-action').textContent = recommendation.action;
+            document.getElementById('recommendation-action').className = 'text-lg font-semibold mb-2 ' + recommendation.color;
+            document.getElementById('recommendation-reason').textContent = recommendation.reason;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getRecommendation(annualizedROI, urgency, vision, isEstimated, readinessScore, riskAdjustedROI) {
+            const estimatedNote = isEstimated ? " (based on category estimate)" : "";
+            const scalability = document.getElementById('scalability').value;
+            const sustainability = document.getElementById('sustainability').value;
+            const risk = document.getElementById('risk').value;
+            
+            const effectiveROI = (riskAdjustedROI && risk === 'low') ? riskAdjustedROI : annualizedROI;
+            
+            const confidenceModifier = readinessScore < 3 ? " - but gather more strategic info first" : "";
+            
+            if (effectiveROI > 100 && (vision === 'essential' || vision === 'important')) {
+                return {
+                    action: 'INVEST IMMEDIATELY',
+                    reason: `Excellent financial returns${estimatedNote} with strong strategic alignment${confidenceModifier}`,
+                    color: 'text-green-600'
+                };
+            } else if (effectiveROI > 50 && urgency === 'urgent') {
+                return {
+                    action: 'FAST TRACK APPROVAL',
+                    reason: `Business urgency justifies good returns${estimatedNote}${confidenceModifier}`,
+                    color: 'text-green-600'
+                };
+            } else if (effectiveROI > 25) {
+                return {
+                    action: 'PROCEED WITH OPTIMIZATION',
+                    reason: `Solid foundation${estimatedNote} - look for ways to improve returns${confidenceModifier}`,
+                    color: 'text-yellow-600'
+                };
+            } else if (effectiveROI < 25 && (scalability === 'high' || sustainability === 'high')) {
+                return {
+                    action: 'CONSIDER LONG-TERM VALUE',
+                    reason: `Low immediate returns${estimatedNote} but strong future potential${confidenceModifier}`,
+                    color: 'text-yellow-600'
+                };
+            } else {
+                return {
+                    action: 'RECONSIDER OR REDESIGN',
+                    reason: `Insufficient returns${estimatedNote} - explore alternatives${confidenceModifier}`,
+                    color: 'text-red-600'
+                };
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing calculator...');
+            
+            updateCategory();
+            updateReturnMode();
+            
+            const categorySelect = document.getElementById('category');
+            if (categorySelect) {
+                categorySelect.addEventListener('change', updateCategory);
+                console.log('Category change listener added');
+            }
+            
+            const returnRadios = document.querySelectorAll('input[name="hasReturn"]');
+            returnRadios.forEach(radio => {
+                radio.addEventListener('change', updateReturnMode);
+            });
+            
+            console.log('Calculator initialized successfully');
+        });
+
+        if (document.readyState === 'loading') {
+            // Document still loading, wait for DOMContentLoaded
+        } else {
+            // Document already loaded
+            updateCategory();
+            updateReturnMode();
+        }
+    </script>
+
+<script>
+const categoryOptions = {
+  "customer-acquisition": [
+    "Digital Marketing Campaign",
+    "Sales Training Program",
+    "Lead Generation Tools"
+  ],
+  "customer-retention": [
+    "Loyalty Program",
+    "Customer Success Platform",
+    "Personalized Outreach"
+  ],
+  "product-development": [
+    "New Product Launch",
+    "Feature Enhancement",
+    "Market Research"
+  ],
+  "operational-efficiency": [
+    "Automation Software",
+    "Process Optimization",
+    "Cost Reduction Initiative"
+  ],
+  "team-capability": [
+    "Employee Training",
+    "Leadership Development",
+    "Team Building"
+  ],
+  "risk-mitigation": [
+    "Compliance System",
+    "Cybersecurity",
+    "Insurance & Legal"
+  ]
+};
+
+document.getElementById("category").addEventListener("change", function () {
+  const investmentTypeSelect = document.getElementById("investmentType");
+  investmentTypeSelect.innerHTML = '<option value="">Select specific type...</option>';
+  const selectedCategory = this.value;
+
+  if (categoryOptions[selectedCategory]) {
+    categoryOptions[selectedCategory].forEach(type => {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = type;
+      investmentTypeSelect.appendChild(option);
+    });
+  }
+});
+</script>
+
+</body>
+</html>
